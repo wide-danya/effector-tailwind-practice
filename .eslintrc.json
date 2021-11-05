@@ -1,6 +1,6 @@
 {
-    "extends": ["plugin:prettier/recommended", "prettier"],
-    "env": {
-      "browser": true
-    }
+  "extends": ["plugin:prettier/recommended", "react-app", "prettier"],
+  "env": {
+    "browser": true
   }
+}
