@@ -1,4 +1,5 @@
+import ClipCard from './ClipCard'
+import ClipCards from './ClipCards'
 import Search from './Search'
-import Vacancy from './Vacancy'
 
-export { Search, Vacancy }
+export { Search, ClipCard, ClipCards }
