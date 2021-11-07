@@ -1,6 +1,6 @@
 import { ClipCard } from 'components'
 import { useList } from 'effector-react'
-import { $clips } from 'models/search'
+import { $clips } from 'models/clips'
 
 export default function ClipCards() {
   return useList($clips, (clipData) => (

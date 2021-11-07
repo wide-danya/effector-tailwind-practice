@@ -21,7 +21,7 @@ export const searchFx = attach({
   source: $searchParams,
   async effect([broadcasterId, gameId]) {
     if (!(broadcasterId || gameId)) {
-      throw new Error('set at least one parameter')
+      throw Error('set at least one parameter')
     }
 
     const url = new URL('https://api.twitch.tv/helix/clips')
@@ -44,25 +44,9 @@ export const searchFx = attach({
       const res = await axios(url.toString(), config)
       return res.data.data
     } catch (err) {
-      traceError(err)
       throw err
     }
   },
-})
-
-type ClipData = {
-  thumbnail_url: string
-  url: string
-  title: string
-  broadcaster_name: string
-}
-
-const setClips = createEvent<ClipData[]>()
-export const $clips = restore(setClips, [])
-
-forward({
-  from: searchFx.doneData,
-  to: setClips,
 })
 
 const traceErrorFx = createEffect((err: Error) => {
@@ -73,7 +57,3 @@ forward({
   from: searchFx.failData,
   to: traceErrorFx,
 })
-
-function traceError(err: unknown) {
-  console.log('Error:', err)
-}
