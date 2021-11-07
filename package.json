@@ -5,6 +5,7 @@
   "dependencies": {
     "@craco/craco": "^6.4.0",
     "axios": "^0.24.0",
+    "dotenv": "^10.0.0",
     "effector": "^22.1.2",
     "effector-react": "^22.0.4",
     "react": "^17.0.2",
