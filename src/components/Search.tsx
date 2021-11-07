@@ -1,42 +1,35 @@
 import { useStore } from 'effector-react'
 import {
-  $isFullTime,
-  $location,
-  $term,
-  setLocation,
-  setTerm,
-  toggleIsFullTime,
+  $broadcasterId,
+  $gameId,
   searchFx,
+  setBroadcasterId,
+  setGameId,
 } from 'models/search'
 
 export default function Search() {
-  const isFullTime = useStore($isFullTime)
-  const location = useStore($location)
-  const term = useStore($term)
+  const gameId = useStore($gameId)
+  const broadcasterId = useStore($broadcasterId)
 
   return (
-    <div className="">
+    <div className="flex justify-center my-4 space-x-4">
       <input
+        className="pl-2 py-1 rounded-md shadow"
         type="text"
-        onChange={(e) => setTerm(e.target.value)}
-        placeholder="Term"
-        value={term}
+        onChange={(e) => setBroadcasterId(e.target.value)}
+        placeholder="Broadcaster ID"
+        value={broadcasterId}
       />
       <input
+        className="pl-2 py-1 rounded-md shadow"
         type="text"
-        onChange={(e) => setLocation(e.target.value)}
-        placeholder="Location"
-        value={location}
+        onChange={(e) => setGameId(e.target.value)}
+        placeholder="Game ID"
+        value={gameId}
       />
-      <span>
-        Full Time
-        <input
-          type="checkbox"
-          onChange={() => toggleIsFullTime(!isFullTime)}
-          checked={isFullTime}
-        />
-        <button onClick={() => searchFx()}>Search</button>
-      </span>
+      <button className="px-2 rounded-md shadow" onClick={() => searchFx()}>
+        Search
+      </button>
     </div>
   )
 }
