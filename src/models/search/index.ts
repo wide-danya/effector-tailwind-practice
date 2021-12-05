@@ -8,11 +8,15 @@ export const $broadcasterId = restore(setBroadcasterId, '')
 export const setGameId = createEvent<string>()
 export const $gameId = restore(setGameId, '509663')
 
-const $searchParams = combine($broadcasterId, $gameId)
+export const setCursor = createEvent<string>()
+export const $cursor = restore(setCursor, '')
+$cursor.watch((s) => console.log('$cursor', s))
+
+const $searchParams = combine($broadcasterId, $gameId, $cursor)
 
 export const searchFx = attach({
   source: $searchParams,
-  async effect([broadcasterId, gameId]) {
+  async effect([broadcasterId, gameId, cursor]) {
     if (!(broadcasterId || gameId)) {
       throw Error('set at least one parameter')
     }
@@ -25,6 +29,9 @@ export const searchFx = attach({
     if (!!gameId) {
       url.searchParams.set('game_id', gameId)
     }
+    if (!!cursor) {
+      url.searchParams.set('after', cursor)
+    }
 
     const config = {
       headers: {
@@ -35,7 +42,7 @@ export const searchFx = attach({
 
     try {
       const res = await axios(url.toString(), config)
-      return res.data.data
+      return res.data
     } catch (err) {
       throw err
     }

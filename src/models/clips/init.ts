@@ -3,6 +3,6 @@ import { searchFx } from 'models/search'
 import { setClips } from '.'
 
 forward({
-  from: searchFx.doneData,
+  from: searchFx.doneData.map((data) => data?.data ?? []),
   to: setClips,
 })
