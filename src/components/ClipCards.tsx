@@ -1,9 +1,11 @@
 import { ClipCard } from 'components'
-import { useList } from 'effector-react'
+import { useList, useStore } from 'effector-react'
 import { $clips } from 'models/clips'
+import { getPaginatedClipsFx } from 'models/search'
+import { Spinner } from 'ui_kit'
 
 export default function ClipCards() {
-  return useList($clips, (clipData) => (
+  const clipCards = useList($clips, (clipData) => (
     <ClipCard
       broadcasterName={clipData.broadcaster_name}
       thumbnailUrl={clipData.thumbnail_url}
@@ -11,4 +13,14 @@ export default function ClipCards() {
       url={clipData.url}
     />
   ))
+  const pending = useStore(getPaginatedClipsFx.pending)
+
+  return (
+    <>
+      {clipCards}
+      <div className={`my-4 ${pending ? 'visible' : 'invisible'} `}>
+        <Spinner />
+      </div>
+    </>
+  )
 }

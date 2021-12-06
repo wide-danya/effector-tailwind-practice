@@ -1,4 +1,4 @@
-import { Search, ClipCards } from 'components'
+import { ClipCards, Search } from 'components'
 
 export default function App() {
   return (
