@@ -1,8 +1,15 @@
-import { forward } from 'effector'
-import { searchFx } from 'models/search'
-import { setClips } from '.'
+import { sample } from 'effector'
+import { getPaginatedClipsFx, getClipsFx } from 'models/search'
+import { $clips } from '.'
 
-forward({
-  from: searchFx.doneData.map((data) => data?.data ?? []),
-  to: setClips,
+sample({
+  clock: getPaginatedClipsFx.doneData.map((data) => data?.data ?? []),
+  source: $clips,
+  fn: (clips, newClips) => [...clips, ...newClips],
+  target: $clips,
+})
+
+sample({
+  source: getClipsFx.doneData.map((data) => data?.data ?? []),
+  target: $clips,
 })

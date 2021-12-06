@@ -2,48 +2,40 @@ import { useStore } from 'effector-react'
 import {
   $broadcasterId,
   $gameId,
-  searchFx,
-  setBroadcasterId,
-  setCursor,
-  setGameId,
+  broadcasterIdChanged,
+  gameIdChanged,
+  searchButtonClicked,
+  getClipsFx,
 } from 'models/search'
+import { Spinner } from 'ui_kit'
 
 export default function Search() {
   const gameId = useStore($gameId)
   const broadcasterId = useStore($broadcasterId)
-
-  const handleChangeBoradcasterId = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setBroadcasterId(e.target.value)
-    setCursor('')
-  }
-  const handleChangeGameId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGameId(e.target.value)
-    setCursor('')
-  }
-  const handleSearchClick = () => {
-    searchFx()
-  }
+  const pending = useStore(getClipsFx.pending)
 
   return (
     <div className="flex justify-center my-4 space-x-4">
       <input
         className="pl-2 py-1 rounded-md shadow"
         type="text"
-        onChange={handleChangeBoradcasterId}
+        onChange={(e) => broadcasterIdChanged(e.target.value)}
         placeholder="Broadcaster ID"
         value={broadcasterId}
       />
       <input
         className="pl-2 py-1 rounded-md shadow"
         type="text"
-        onChange={handleChangeGameId}
+        onChange={(e) => gameIdChanged(e.target.value)}
         placeholder="Game ID"
         value={gameId}
       />
-      <button className="px-2 rounded-md shadow" onClick={handleSearchClick}>
-        Search
+      <button
+        disabled={pending}
+        className="items-center justify-center px-2 w-20 text-center rounded-md shadow"
+        onClick={() => searchButtonClicked()}
+      >
+        {pending ? <Spinner /> : `Search`}
       </button>
     </div>
   )

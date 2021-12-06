@@ -1,50 +1,38 @@
-import axios from 'axios'
-import { TWITCH_BEARER, TWITCH_CLIENT_ID } from 'consts'
-import { attach, combine, createEvent, restore } from 'effector'
+import { DEFAULT_BROADCASTER_ID, DEFAULT_CURSOR, DEFAULT_GAME_ID } from 'consts'
+import { attach, combine, createEvent, createStore } from 'effector'
+import { buildUrl, query } from 'utils'
 
-export const setBroadcasterId = createEvent<string>()
-export const $broadcasterId = restore(setBroadcasterId, '')
+export const searchButtonClicked = createEvent()
+export const gameIdChanged = createEvent<string>()
+export const broadcasterIdChanged = createEvent<string>()
+export const bottomRiched = createEvent()
 
-export const setGameId = createEvent<string>()
-export const $gameId = restore(setGameId, '509663')
+export const $broadcasterId = createStore(DEFAULT_BROADCASTER_ID)
+export const $gameId = createStore(DEFAULT_GAME_ID)
+export const $cursor = createStore(DEFAULT_CURSOR)
 
-export const setCursor = createEvent<string>()
-export const $cursor = restore(setCursor, '')
-$cursor.watch((s) => console.log('$cursor', s))
+export const $searchParams = combine({
+  broadcasterId: $broadcasterId,
+  gameId: $gameId,
+  cursor: $cursor,
+})
 
-const $searchParams = combine($broadcasterId, $gameId, $cursor)
-
-export const searchFx = attach({
+export const getClipsFx = attach({
   source: $searchParams,
-  async effect([broadcasterId, gameId, cursor]) {
-    if (!(broadcasterId || gameId)) {
-      throw Error('set at least one parameter')
-    }
+  async effect({ broadcasterId, gameId }) {
+    const url = buildUrl(broadcasterId, gameId)
+    const result = await query(url)
 
-    const url = new URL('https://api.twitch.tv/helix/clips')
+    return result
+  },
+})
 
-    if (!!broadcasterId) {
-      url.searchParams.set('broadcaster_id', broadcasterId)
-    }
-    if (!!gameId) {
-      url.searchParams.set('game_id', gameId)
-    }
-    if (!!cursor) {
-      url.searchParams.set('after', cursor)
-    }
+export const getPaginatedClipsFx = attach({
+  source: $searchParams,
+  async effect({ broadcasterId, gameId, cursor }) {
+    const url = buildUrl(broadcasterId, gameId, cursor)
+    const result = await query(url)
 
-    const config = {
-      headers: {
-        'Client-ID': TWITCH_CLIENT_ID,
-        Authorization: TWITCH_BEARER,
-      },
-    }
-
-    try {
-      const res = await axios(url.toString(), config)
-      return res.data
-    } catch (err) {
-      throw err
-    }
+    return result
   },
 })
